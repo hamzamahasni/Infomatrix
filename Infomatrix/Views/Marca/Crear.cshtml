@@ -1,0 +1,30 @@
+﻿@model Infomatrix.Models.Marca
+@{
+    ViewData["Title"] = "Crear";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" asp-action="Crear">
+    <div class="border p-3">
+        
+
+        <div class="form-group row">
+            <h2 class="text-info pl3">Nueva Marca</h2>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <label asp-for="Nombre" class="form-label">Nombre Marca</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    @*<span asp-validation-for="NombreCategoria" class="text-danger"></span>*@
+                </div>
+            </div>
+
+            <br />
+            <div class="d-grid gap-2 d-md-block">
+                <button type="submit" class="btn btn-primary">Crear Nueva</button>
+                <a asp-controller="Marca" asp-action="Index" class="btn btn-success">Regresar</a>
+            </div>
+        </div>
+    </div>
+</form>

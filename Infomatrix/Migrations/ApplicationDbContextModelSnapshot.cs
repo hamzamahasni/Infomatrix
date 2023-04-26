@@ -40,6 +40,23 @@ namespace Infomatrix.Migrations
 
                     b.ToTable("Categoria");
                 });
+
+            modelBuilder.Entity("Infomatrix.Models.Marca", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Marca");
+                });
 #pragma warning restore 612, 618
         }
     }
