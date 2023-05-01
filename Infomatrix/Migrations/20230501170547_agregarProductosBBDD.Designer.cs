@@ -3,6 +3,7 @@ using Infomatrix.Datos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infomatrix.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230501170547_agregarProductosBBDD")]
+    partial class agregarProductosBBDD
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,7 +110,7 @@ namespace Infomatrix.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Infomatrix.Models.Marca", "Marca")
+                    b.HasOne("Infomatrix.Models.Marca", "TipoAplicacion")
                         .WithMany()
                         .HasForeignKey("MarcaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -115,7 +118,7 @@ namespace Infomatrix.Migrations
 
                     b.Navigation("Categoria");
 
-                    b.Navigation("Marca");
+                    b.Navigation("TipoAplicacion");
                 });
 #pragma warning restore 612, 618
         }

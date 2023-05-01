@@ -35,7 +35,12 @@
                     <tr>
                         <th width="50%">@item.Nombre</th>
                         <th class="text-center">
-                            
+                            <a asp-controller="Marca" asp-action="Editar" asp-route-Id="@item.Id" class="btn btn-primary mx-2">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a asp-controller="Marca" asp-action="Eliminar" asp-route-Id="@item.Id" class="btn btn-danger mx-2">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                         </th>
                     </tr>
                 }

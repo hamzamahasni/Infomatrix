@@ -1,36 +1,38 @@
 ﻿@model Infomatrix.Models.Marca
 @{
-    ViewData["Title"] = "Crear";
+    ViewData["Title"] = "Editar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<form method="post" asp-action="Crear">
+<form method="post" asp-action="Editar">
+    <input asp-for="Id" hidden/> @*Para poder enviarle al post el id de editar*@
     <div class="border p-3">
         <div asp-validation-summary="ModelOnly" class="text-danger">
+
         </div>
 
         <div class="form-group row">
-            <h2 class="text-info pl3">Nueva Marca</h2>
+            <h2 class="text-info pl3">Editar Marca</h2>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <label asp-for="Nombre" class="form-label">Nombre Marca</label>
-                    <input asp-for="Nombre" class="form-control" />
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control"/>
                     <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
             </div>
-
-            <br />
+            
+            <br/>
             <div class="d-grid gap-2 d-md-block">
-                <button type="submit" class="btn btn-primary">Crear Nueva</button>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
                 <a asp-controller="Marca" asp-action="Index" class="btn btn-success">Regresar</a>
             </div>
         </div>
+
     </div>
+
 </form>
 @section Scripts {
-    @{
-        <partial name="_ValidationScriptsPartial" />
-    }
+    @{ <partial name="_ValidationScriptsPartial" /> }
 }
