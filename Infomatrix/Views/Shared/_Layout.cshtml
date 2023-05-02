@@ -12,26 +12,45 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Infomatrix</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between flex-row-reverse">
+
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categoria" asp-action="Index">Categoria</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Administrar Contenido
+                            </a>
+
+                            <ul class="dropdown-menu">
+
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Categoria" asp-action="Index">Categoria</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Marca" asp-action="Index">Marca</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Producto" asp-action="Index">Producto</a></li>
+                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Crear Admins</a></li>
+
+
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Marca" asp-action="Index">Marca</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Producto" asp-action="Index">Producto</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Administrar Ordenes
+                            </a>
+
+                            <ul class="dropdown-menu">
+
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Orden" asp-action="Index">Orden</a></li>
+
+
+                            </ul>
                         </li>
                     </ul>
                 </div>

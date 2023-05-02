@@ -91,14 +91,99 @@ namespace Infomatrix.Controllers
                 else
                 {
                     //Actualizar
+                    //Seleccionamo el producto actual (Problema de que estamos seleccionado un producto en memoria)
+                    var objProducto = db.Producto.AsNoTracking().FirstOrDefault(p => p.Id == productoVM.Producto.Id);
+
+                    if (files.Count > 0) // Usuario carga nueva imagen para actualizar
+                    {
+                        string upload = webRootPath + WC.imagenRuta;
+                        //Creamos la imagen
+                        string fileName = Guid.NewGuid().ToString();
+                        string extension = Path.GetExtension(files[0].FileName);
+
+                        //borra la imagen anterior
+                        var anteriorFile = Path.Combine(upload, objProducto.ImagenUrl);
+                        if (System.IO.File.Exists(anteriorFile))
+                        {
+                            System.IO.File.Delete(anteriorFile);
+
+                        }
+
+                        //Insertamos la imagen nueva
+                        using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                        {
+                            files[0].CopyTo(fileStream);
+                        }
+                        productoVM.Producto.ImagenUrl = fileName + extension;
+
+                    }
+                    else //La imagen es la misma
+                    {
+                        productoVM.Producto.ImagenUrl = objProducto.ImagenUrl;
+                    }
+                    db.Producto.Update(productoVM.Producto);
+                    //TempData[WC.Exitosa] = "Producto actulizado Exitosamente";
                 }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            //Se llenan nuevamente las listas si algo falla
+            productoVM.CategoriaLista = db.Categoria.Select(c => new SelectListItem
+            {
+                Text = c.NombreCategoria,
+                Value = c.Id.ToString()
+            });
+            productoVM.MarcaLista = db.Marca.Select(c => new SelectListItem
+            {
+                Text = c.Nombre,
+                Value = c.Id.ToString()
+            });
+
             return View(productoVM);
 
         }
+        public IActionResult Eliminar(int? Id)
+        {
+            if (Id == null || Id == 0)
+            {
+                return NotFound();
+            }
+            Producto producto = db.Producto.Include(c => c.Categoria)
+                                           .Include(t => t.Marca)
+                                           .FirstOrDefault(p => p.Id == Id);
+            //Producto producto = productoRepo.ObtenerPrimero(p => p.Id == Id, incluirPropiedades: "Categoria,TipoAplicacion");
+            if (producto == null)
+            {
+                return NotFound();
+            }
 
+            return View(producto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Eliminar(Producto producto)
+        {
+            if (producto == null)
+            {
+                //TempData[WC.Error] = "Error al eliminar el Producto";
+                return NotFound();
+            }
+            string upload = webHostEnvironment.WebRootPath + WC.imagenRuta;
+
+            //Producto pr = productoRepo.ObtenerPrimero(p => p.Id == producto.Id, incluirPropiedades: "Categoria,TipoAplicacion", isTracking: false);
+            //borra la imagen anterior
+            var anteriorFile = Path.Combine(upload, producto.ImagenUrl);
+            if (System.IO.File.Exists(anteriorFile))
+            {
+                System.IO.File.Delete(anteriorFile);
+
+            }
+            db.Producto.Remove(producto);
+            db.SaveChanges();
+            //TempData[WC.Exitosa] = "Producto eliminado Exitosamente";
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }
