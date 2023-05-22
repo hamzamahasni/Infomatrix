@@ -110,7 +110,7 @@ namespace Infomatrix.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Infomatrix.Models.Marca", "TipoAplicacion")
+                    b.HasOne("Infomatrix.Models.Marca", "Marca")
                         .WithMany()
                         .HasForeignKey("MarcaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -118,7 +118,7 @@ namespace Infomatrix.Migrations
 
                     b.Navigation("Categoria");
 
-                    b.Navigation("TipoAplicacion");
+                    b.Navigation("Marca");
                 });
 #pragma warning restore 612, 618
         }

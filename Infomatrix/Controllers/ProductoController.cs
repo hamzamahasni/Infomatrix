@@ -151,7 +151,7 @@ namespace Infomatrix.Controllers
             Producto producto = db.Producto.Include(c => c.Categoria)
                                            .Include(t => t.Marca)
                                            .FirstOrDefault(p => p.Id == Id);
-            //Producto producto = productoRepo.ObtenerPrimero(p => p.Id == Id, incluirPropiedades: "Categoria,TipoAplicacion");
+            //Producto producto = productoRepo.ObtenerPrimero(p => p.Id == Id, incluirPropiedades: "Categoria,Marca");
             if (producto == null)
             {
                 return NotFound();
@@ -171,7 +171,7 @@ namespace Infomatrix.Controllers
             }
             string upload = webHostEnvironment.WebRootPath + WC.imagenRuta;
 
-            //Producto pr = productoRepo.ObtenerPrimero(p => p.Id == producto.Id, incluirPropiedades: "Categoria,TipoAplicacion", isTracking: false);
+            //Producto pr = productoRepo.ObtenerPrimero(p => p.Id == producto.Id, incluirPropiedades: "Categoria,Marca", isTracking: false);
             //borra la imagen anterior
             var anteriorFile = Path.Combine(upload, producto.ImagenUrl);
             if (System.IO.File.Exists(anteriorFile))
