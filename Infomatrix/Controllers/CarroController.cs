@@ -16,12 +16,6 @@ namespace Infomatrix.Controllers
     public class CarroController : Controller
     {
         private readonly ApplicationDbContext db;
-        private readonly IProductoRepositorio productoRepo;
-        private readonly IUsuarioAplicacionRepositorio usuarioRepo;
-        private readonly IOrdenRepositorio ordenRepo;
-        private readonly IOrdenDetalleRepositorio ordenDetalleRepo;
-        private readonly IWebHostEnvironment webHostEnvironment;
-        private readonly IEmailSender emailSender;
 
         //Para que pueda ser usada en todo el controlador y no se pierdan sus valores
         [BindProperty]
