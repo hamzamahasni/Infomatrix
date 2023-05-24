@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
-using Infomatrix.Models;
+using Infomatrix_Modelos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Infomatrix_Utilidades;
 
 namespace Infomatrix.Areas.Identity.Pages.Account
 {
@@ -144,7 +145,15 @@ namespace Infomatrix.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, WC.AdminRole);
+
+                    if (User.IsInRole(WC.AdminRole))
+                    {
+                        await _userManager.AddToRoleAsync(user, WC.AdminRole);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, WC.ClienteRole);
+                    }
 
                     _logger.LogInformation("User created a new account with password.");
 
@@ -157,8 +166,8 @@ namespace Infomatrix.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirmar tu email",
+                        $"Porfavor confime su cuenta <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Click aqui</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -166,7 +175,18 @@ namespace Infomatrix.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        //return LocalRedirect(returnUrl);
+
+                        if (!User.IsInRole(WC.AdminRole))
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                        else
+                        {
+                            RedirectToAction("Index");
+                        }
+
                         return LocalRedirect(returnUrl);
                     }
                 }

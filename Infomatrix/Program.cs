@@ -1,5 +1,9 @@
-using Infomatrix.Datos;
+using Infomatrix_Datos.Datos;
+using Infomatrix_Datos.Datos.Repositorio;
+using Infomatrix_Datos.Datos.Repositorio.IRepositorio;
+using Infomatrix_Utilidades;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +21,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddDefaultTokenProviders().AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 //Sesiones
 builder.Services.AddHttpContextAccessor();
@@ -28,6 +31,16 @@ builder.Services.AddSession(Options =>
     Options.Cookie.HttpOnly = true;
     Options.Cookie.IsEssential = true;
 });
+
+
+//Agregar servicios
+//permite utilizar las intefaces y si no se usan se destruyen
+builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
+builder.Services.AddScoped<IMarcaRepositorio, MarcaRepositorio>();
+builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
+builder.Services.AddScoped<IOrdenRepositorio, OrdenRepositorio>();
+builder.Services.AddScoped<IOrdenDetalleRepositorio, OrdenDetalleRepositorio>();
+builder.Services.AddScoped<IUsuarioAplicacionRepositorio, UsuarioAplicacionRepositorio>();
 
 
 var app = builder.Build();

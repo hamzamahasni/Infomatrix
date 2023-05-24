@@ -1,22 +1,25 @@
-﻿using Infomatrix.Datos;
-using Infomatrix.Models;
+﻿using Infomatrix_Datos.Datos;
+using Infomatrix_Modelos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Infomatrix_Utilidades;
+using Infomatrix_Datos.Datos.Repositorio.IRepositorio;
 
 namespace Infomatrix.Controllers
 {
+    [Authorize(Roles = WC.AdminRole)]
     public class MarcaController : Controller
     {
 
-        private readonly ApplicationDbContext db;
+        private readonly IMarcaRepositorio marcaRepo;
 
-        public MarcaController(ApplicationDbContext db)
+        public MarcaController(IMarcaRepositorio marcaRepo)
         {
-            this.db = db;
+            this.marcaRepo = marcaRepo;
         }
-
         public IActionResult Index()
         {
-            IEnumerable<Marca> lista = db.Marca;
+            IEnumerable<Marca> lista = marcaRepo.ObtenerTodos();
             return View(lista);
         }
         public IActionResult Crear()
@@ -24,15 +27,17 @@ namespace Infomatrix.Controllers
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]//Antifalsificaciones sitio seguro
+        [ValidateAntiForgeryToken]
         public IActionResult Crear(Marca marca)
         {
             if (ModelState.IsValid)
             {
-                db.Marca.Add(marca);
-                db.SaveChanges();
+                marcaRepo.Agregar(marca);
+                marcaRepo.grabar();
+                TempData[WC.Exitosa] = "Tipo Aplicacion creado Exitosamente";
                 return RedirectToAction(nameof(Index));
             }
+            TempData[WC.Error] = "Error al crear Tipo Aplicacion";
             return View(marca);
         }
         public IActionResult Editar(int? id)
@@ -42,7 +47,7 @@ namespace Infomatrix.Controllers
                 return NotFound();
             }
 
-            var obj = db.Marca.Find(id);
+            var obj = marcaRepo.Obtener(id.GetValueOrDefault());
             if (obj == null)
             {
                 return NotFound();
@@ -56,10 +61,12 @@ namespace Infomatrix.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Marca.Update(marca);
-                db.SaveChanges();
+                marcaRepo.Actualizar(marca);
+                marcaRepo.grabar();
+                TempData[WC.Exitosa] = "Tipo Aplicacion editado Exitosamente";
                 return RedirectToAction(nameof(Index));
             }
+            TempData[WC.Error] = "Error al editar Tipo Aplicacion";
             return View(marca);
         }
         public IActionResult Eliminar(int? id)
@@ -69,7 +76,7 @@ namespace Infomatrix.Controllers
                 return NotFound();
             }
 
-            var obj = db.Marca.Find(id);
+            var obj = marcaRepo.Obtener(id.GetValueOrDefault());
             if (obj == null)
             {
                 return NotFound();
@@ -83,10 +90,12 @@ namespace Infomatrix.Controllers
         {
             if (marca == null)
             {
+                TempData[WC.Error] = "Error al eliminar Tipo Aplicacion";
                 return NotFound();
             }
-            db.Marca.Remove(marca);
-            db.SaveChanges();
+            marcaRepo.Remover(marca);
+            marcaRepo.grabar();
+            TempData[WC.Exitosa] = "Tipo Aplicacion eliminado Exitosamente";
             return RedirectToAction(nameof(Index));
 
         }

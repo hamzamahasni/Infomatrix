@@ -1,22 +1,26 @@
-﻿using Infomatrix.Datos;
-using Infomatrix.Models;
+﻿using Infomatrix_Datos.Datos;
+using Infomatrix_Modelos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using Infomatrix_Utilidades;
+using Infomatrix_Datos.Datos.Repositorio.IRepositorio;
 
 namespace Infomatrix.Controllers
 {
+    [Authorize(Roles = WC.AdminRole)]
     public class CategoriaController : Controller
     {
 
-        private readonly ApplicationDbContext db;
-        
-        public CategoriaController(ApplicationDbContext db)
-        {
-            this.db = db;
-        }
+        private readonly ICategoriaRepositorio catRepo;
 
+        public CategoriaController(ICategoriaRepositorio catRepo)
+        {
+            this.catRepo = catRepo;
+        }
         public IActionResult Index()
         {
-            IEnumerable<Categoria> lista = db.Categoria;
+            IEnumerable<Categoria> lista = catRepo.ObtenerTodos();
             return View(lista);
         }
         public IActionResult Crear()
@@ -24,15 +28,17 @@ namespace Infomatrix.Controllers
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]//Antifalsificaciones sitio seguro
+        [ValidateAntiForgeryToken]
         public IActionResult Crear(Categoria categoria)
         {
             if (ModelState.IsValid)
             {
-                db.Categoria.Add(categoria);
-                db.SaveChanges();
+                catRepo.Agregar(categoria);
+                catRepo.grabar();
+                TempData[WC.Exitosa] = "Categoria creada Exitosamente";
                 return RedirectToAction(nameof(Index));
             }
+            TempData[WC.Error] = "Error al crear Categoria";
             return View(categoria);
         }
         public IActionResult Editar(int? id)
@@ -42,7 +48,7 @@ namespace Infomatrix.Controllers
                 return NotFound();
             }
 
-            var obj = db.Categoria.Find(id); 
+            var obj = catRepo.Obtener(id.GetValueOrDefault()); //para asegurar que no sea nulo
             if (obj == null)
             {
                 return NotFound();
@@ -56,10 +62,12 @@ namespace Infomatrix.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Categoria.Update(categoria);
-                db.SaveChanges();
+                catRepo.Actualizar(categoria);
+                catRepo.grabar();
+                TempData[WC.Exitosa] = "Categoria editada Exitosamente";
                 return RedirectToAction(nameof(Index));
             }
+            TempData[WC.Error] = "Error al crear la Categoria";
             return View(categoria);
         }
         public IActionResult Eliminar(int? id)
@@ -69,7 +77,7 @@ namespace Infomatrix.Controllers
                 return NotFound();
             }
 
-            var obj = db.Categoria.Find(id);
+            var obj = catRepo.Obtener(id.GetValueOrDefault());
             if (obj == null)
             {
                 return NotFound();
@@ -83,11 +91,14 @@ namespace Infomatrix.Controllers
         {
             if (categoria == null)
             {
+                TempData[WC.Error] = "Error al intentar elimninar la Categoria";
                 return NotFound();
             }
-            db.Categoria.Remove(categoria);
-            db.SaveChanges();
+            catRepo.Remover(categoria);
+            catRepo.grabar();
+            TempData[WC.Exitosa] = "Categoria eliminada Exitosamente";
             return RedirectToAction(nameof(Index));
+
 
         }
     }

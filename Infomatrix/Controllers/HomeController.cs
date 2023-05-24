@@ -1,7 +1,7 @@
-﻿using Infomatrix.Datos;
-using Infomatrix.Models;
-using Infomatrix.Models.ViewModels;
-using Infomatrix.Utilidades;
+﻿using Infomatrix_Datos.Datos;
+using Infomatrix_Modelos;
+using Infomatrix_Modelos.ViewModels;
+using Infomatrix_Utilidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
