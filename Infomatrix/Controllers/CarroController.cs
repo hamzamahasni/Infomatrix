@@ -7,24 +7,33 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text;
 using Infomatrix_Utilidades;
+using Infomatrix_Datos.Datos.Repositorio.IRepositorio;
 
 namespace Infomatrix.Controllers
 {
     [Authorize]
     public class CarroController : Controller
     {
-        private readonly ApplicationDbContext db;
+        //private readonly ApplicationDbContext db;
+        private readonly IProductoRepositorio productoRepo;
+        private readonly IUsuarioAplicacionRepositorio usuarioRepo;
+        private readonly IOrdenRepositorio ordenRepo;
+        private readonly IOrdenDetalleRepositorio ordenDetalleRepo;
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IEmailSender emailSender;
-
 
         //Para que pueda ser usada en todo el controlador y no se pierdan sus valores
         [BindProperty]
         public ProductoUsuarioVM productoUsuarioVM { get; set; }
 
-        public CarroController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment, IEmailSender emailSender)
+        public CarroController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender,
+                                IProductoRepositorio productoRepo, IUsuarioAplicacionRepositorio usuarioRepo,
+                                IOrdenDetalleRepositorio ordenDetalleRepo, IOrdenRepositorio ordenRepo)
         {
-            this.db = db;
+            this.productoRepo = productoRepo;
+            this.usuarioRepo = usuarioRepo;
+            this.ordenDetalleRepo = ordenDetalleRepo;
+            this.ordenRepo = ordenRepo;
             this.webHostEnvironment = webHostEnvironment;
             this.emailSender = emailSender;
         }
@@ -32,15 +41,15 @@ namespace Infomatrix.Controllers
         {
             List<CarroCompra> carroComprasList = new List<CarroCompra>();
 
-            if(HttpContext.Session.Get<IEnumerable<CarroCompra>>(WC.SessionCarroCompras)!=null &&
-               HttpContext.Session.Get<IEnumerable<CarroCompra>>(WC.SessionCarroCompras).Count()>0) 
+            if (HttpContext.Session.Get<IEnumerable<CarroCompra>>(WC.SessionCarroCompras) != null &&
+               HttpContext.Session.Get<IEnumerable<CarroCompra>>(WC.SessionCarroCompras).Count() > 0)
             {
                 carroComprasList = HttpContext.Session.Get<List<CarroCompra>>(WC.SessionCarroCompras);
             }
 
-            List<int> prodEnCarro = carroComprasList.Select(i=>i.ProductoId).ToList();
-            IEnumerable<Producto> prodList = db.Producto.Where(p => prodEnCarro.Contains(p.Id));
-            //IEnumerable<Producto> prodList = productoRepo.ObtenerTodos(p => prodEnCarro.Contains(p.Id));
+            List<int> prodEnCarro = carroComprasList.Select(i => i.ProductoId).ToList();
+            //IEnumerable<Producto> prodList = db.Producto.Where(p => prodEnCarro.Contains(p.Id));
+            IEnumerable<Producto> prodList = productoRepo.ObtenerTodos(p => prodEnCarro.Contains(p.Id));
             return View(prodList);
         }
         [HttpPost]
@@ -66,12 +75,12 @@ namespace Infomatrix.Controllers
             }
 
             List<int> prodEnCarro = carroComprasList.Select(i => i.ProductoId).ToList();
-            IEnumerable<Producto> prodList = db.Producto.Where(p => prodEnCarro.Contains(p.Id));
-            //IEnumerable<Producto> prodList = productoRepo.ObtenerTodos(p => prodEnCarro.Contains(p.Id));
+            //IEnumerable<Producto> prodList = db.Producto.Where(p => prodEnCarro.Contains(p.Id));
+            IEnumerable<Producto> prodList = productoRepo.ObtenerTodos(p => prodEnCarro.Contains(p.Id));
             productoUsuarioVM = new ProductoUsuarioVM()
             {
-                UsuarioAplicacion = db.UsuarioAplicacion.FirstOrDefault(u => u.Id == claim.Value),
-                //UsuarioAplicacion = usuarioRepo.ObtenerPrimero(u => u.Id == claim.Value),
+                //UsuarioAplicacion = db.UsuarioAplicacion.FirstOrDefault(u => u.Id == claim.Value),
+                UsuarioAplicacion = usuarioRepo.ObtenerPrimero(u => u.Id == claim.Value),
                 ProductoLista = prodList.ToList()
             };
             return View(productoUsuarioVM);
@@ -81,12 +90,10 @@ namespace Infomatrix.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Resumen")]
-        public async Task<IActionResult> ResumenPost(ProductoUsuarioVM productoUsuarioMV)
+        public async Task<IActionResult> ResumenPost(ProductoUsuarioVM productoUsuarioVM)
         {
-            //var claimsidentity = (ClaimsIdentity)User.Identity;
-            //var claim = claimsidentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            //Estamos rellenando el email de los pedidos a los clientes
+            var claimsidentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsidentity.FindFirst(ClaimTypes.NameIdentifier);
             var rutaTemplate = webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString()
                 + "templaces" + Path.DirectorySeparatorChar.ToString() + "PlantillaOrden.html";
             var subject = "Nueva Orden";
@@ -102,41 +109,41 @@ namespace Infomatrix.Controllers
             //Telefono: { 2}
             //Productos: { 3}
             StringBuilder productoListaSB = new StringBuilder();
-            foreach (var prod in productoUsuarioMV.ProductoLista)
+            foreach (var prod in this.productoUsuarioVM.ProductoLista)
             {
                 productoListaSB.Append($" - Nombre : {prod.NombreProducto}<span style='font-size:14px;'> (ID: {prod.Id})</span><br/> ");
             }
             string messageBody = string.Format(htmlBody,
-                                                productoUsuarioMV.UsuarioAplicacion.NombreCompleto,
-                                                productoUsuarioMV.UsuarioAplicacion.Email,
-                                                productoUsuarioMV.UsuarioAplicacion.PhoneNumber,
+                                                productoUsuarioVM.UsuarioAplicacion.NombreCompleto,
+                                                productoUsuarioVM.UsuarioAplicacion.Email,
+                                                productoUsuarioVM.UsuarioAplicacion.PhoneNumber,
                                                 productoListaSB.ToString());
 
             await emailSender.SendEmailAsync(WC.EmailAdmin, subject, messageBody);
 
-            ////Grabar la Orden y Detalle en la BD
-            //Orden orden = new Orden()
-            //{
-            //    UsuarioAplicacionId = claim.Value,
-            //    NombreCompleto = productoUsuarioMV.UsuarioAplicacion.NombreCompleto,
-            //    Email = productoUsuarioMV.UsuarioAplicacion.Email,
-            //    Telefono = productoUsuarioMV.UsuarioAplicacion.PhoneNumber,
-            //    FechaOrden = DateTime.Now
-            //};
+            //Grabar la Orden y Detalle en la BD
+            Orden orden = new Orden()
+            {
+                UsuarioAplicacionId = claim.Value,
+                NombreCompleto = this.productoUsuarioVM.UsuarioAplicacion.NombreCompleto,
+                Email = this.productoUsuarioVM.UsuarioAplicacion.Email,
+                Telefono = this.productoUsuarioVM.UsuarioAplicacion.PhoneNumber,
+                FechaOrden = DateTime.Now
+            };
 
-            //ordenRepo.Agregar(orden);
-            //ordenRepo.grabar();
+            ordenRepo.Agregar(orden);
+            ordenRepo.grabar();
 
-            //foreach (var prod in productoUsuarioMV.ProductoLista)
-            //{
-            //    OrdenDetalle ordenDetalle = new OrdenDetalle()
-            //    {
-            //        OrdenId = orden.Id,
-            //        ProductoId = prod.Id
-            //    };
-            //    ordenDetalleRepo.Agregar(ordenDetalle);
-            //}
-            //ordenDetalleRepo.grabar();
+            foreach (var prod in this.productoUsuarioVM.ProductoLista)
+            {
+                OrdenDetalle ordenDetalle = new OrdenDetalle()
+                {
+                    OrdenId = orden.Id,
+                    ProductoId = prod.Id
+                };
+                ordenDetalleRepo.Agregar(ordenDetalle);
+            }
+            ordenDetalleRepo.grabar();
 
             return RedirectToAction(nameof(Confirmacion));
         }

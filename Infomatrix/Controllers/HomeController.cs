@@ -1,4 +1,5 @@
 ﻿using Infomatrix_Datos.Datos;
+using Infomatrix_Datos.Datos.Repositorio.IRepositorio;
 using Infomatrix_Modelos;
 using Infomatrix_Modelos.ViewModels;
 using Infomatrix_Utilidades;
@@ -11,20 +12,24 @@ namespace Infomatrix.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext db;
+        private readonly IProductoRepositorio productoRepo;
+        private readonly ICategoriaRepositorio categoriaRepo;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public HomeController(ILogger<HomeController> logger, IProductoRepositorio productoRepo, ICategoriaRepositorio categoriaRepo)
         {
             _logger = logger;
-            this.db = db;   
+            this.productoRepo = productoRepo;
+            this.categoriaRepo = categoriaRepo;
         }
 
         public IActionResult Index()
         {
             HomeVM homeVM = new HomeVM()
             {
-                Productos = db.Producto.Include(c=>c.Categoria).Include(m=>m.Marca),
-                Categorias = db.Categoria
+                //Productos = db.Producto.Include(c=>c.Categoria).Include(t=>t.Marca),
+                //Categorias = db.Categoria
+                Productos = productoRepo.ObtenerTodos(incluirPropiedades: "Categoria,Marca"),
+                Categorias = categoriaRepo.ObtenerTodos()
             };
             return View(homeVM);
         }
@@ -40,7 +45,8 @@ namespace Infomatrix.Controllers
 
             DetalleVM detalleVM = new DetalleVM()
             {
-                Producto = db.Producto.Include(c => c.Categoria).Include(t => t.Marca).Where(p => p.Id == Id).FirstOrDefault(),
+                //Producto = db.Producto.Include(c => c.Categoria).Include(t => t.Marca).Where(p => p.Id == Id).FirstOrDefault(),
+                Producto = productoRepo.ObtenerPrimero(p => p.Id == Id, incluirPropiedades: "Categoria,Marca"),
                 ExisteEnCarro = false
             };
 
@@ -53,7 +59,8 @@ namespace Infomatrix.Controllers
             }
             return View(detalleVM);
         }
-        
+
+
         [HttpPost, ActionName("Detalle")]
         [ValidateAntiForgeryToken]
         public IActionResult DetallePost(int Id)
