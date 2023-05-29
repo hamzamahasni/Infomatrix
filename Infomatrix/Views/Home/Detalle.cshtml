@@ -31,6 +31,16 @@
                                         <p class="text-secondary">@Html.Raw(Model.Producto.DescripcionProducto)</p>
                                     </div>
 
+
+                                    <div class="col-12">
+                                        Unidades:
+                                    </div>
+                                    <div class="col-12">
+
+                                        <input asp-for="@Model.Producto.TempUnidades" class="form-control" />
+                                        <span asp-validation-for="@Model.Producto.TempUnidades" class="text-danger"></span>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

@@ -5,6 +5,9 @@ namespace Infomatrix_Modelos
 {
     public class Producto
     {
+        public Producto() {
+            TempUnidades = 1;
+        }
         [Key]
         public int Id { get; set; }
 
@@ -28,5 +31,9 @@ namespace Infomatrix_Modelos
         public int MarcaId { get; set; }
         [ForeignKey("MarcaId")]
         public virtual Marca? Marca { get; set; }
+
+        [NotMapped]
+        [Range(1,10000)]
+        public int TempUnidades { get; set; }
     }
 }

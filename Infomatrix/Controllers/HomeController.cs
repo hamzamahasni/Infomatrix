@@ -63,7 +63,7 @@ namespace Infomatrix.Controllers
 
         [HttpPost, ActionName("Detalle")]
         [ValidateAntiForgeryToken]
-        public IActionResult DetallePost(int Id)
+        public IActionResult DetallePost(int Id, DetalleVM detalleVM)
         {
             List<CarroCompra> carroComprasLista = new List<CarroCompra>();
             if (HttpContext.Session.Get<IEnumerable<CarroCompra>>(WC.SessionCarroCompras) != null
@@ -71,8 +71,9 @@ namespace Infomatrix.Controllers
             {
                 carroComprasLista = HttpContext.Session.Get<List<CarroCompra>>(WC.SessionCarroCompras);
             }
-            carroComprasLista.Add(new CarroCompra { ProductoId = Id });
+            carroComprasLista.Add(new CarroCompra { ProductoId = Id, Unidades = detalleVM.Producto.TempUnidades});
             HttpContext.Session.Set(WC.SessionCarroCompras, carroComprasLista);
+            TempData[WC.Exitosa] = "Producto Agregado";
             return RedirectToAction(nameof(Index));
         }
 
@@ -89,6 +90,8 @@ namespace Infomatrix.Controllers
             if (productoARemover != null)
             {
                 carroComprasLista.Remove(productoARemover);
+                TempData[WC.Exitosa] = "Producto Removido";
+
             }
 
             HttpContext.Session.Set(WC.SessionCarroCompras, carroComprasLista);
