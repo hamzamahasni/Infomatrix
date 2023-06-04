@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -33,17 +34,25 @@ builder.Services.AddSession(Options =>
 });
 
 
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
+
+
 //Agregar servicios
 //permite utilizar las intefaces y si no se usan se destruyen
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
 builder.Services.AddScoped<IMarcaRepositorio, MarcaRepositorio>();
 builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
-builder.Services.AddScoped<IOrdenRepositorio, OrdenRepositorio>();
-builder.Services.AddScoped<IOrdenDetalleRepositorio, OrdenDetalleRepositorio>();
+builder.Services.AddScoped<IVentaRepositorio, VentaRepositorio>();
+builder.Services.AddScoped<IVentaDetalleRepositorio, VentaDetalleRepositorio>();
 builder.Services.AddScoped<IUsuarioAplicacionRepositorio, UsuarioAplicacionRepositorio>();
 
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

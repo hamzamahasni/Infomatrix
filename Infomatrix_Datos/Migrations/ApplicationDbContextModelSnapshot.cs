@@ -30,7 +30,7 @@ namespace Infomatrix_Datos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("MostrarOrden")
+                    b.Property<int>("MostrarVenta")
                         .HasColumnType("int");
 
                     b.Property<string>("NombreCategoria")
@@ -39,7 +39,7 @@ namespace Infomatrix_Datos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categoria");
+                    b.ToTable("Categoria", (string)null);
                 });
 
             modelBuilder.Entity("Infomatrix_Modelos.Marca", b =>
@@ -56,63 +56,7 @@ namespace Infomatrix_Datos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Marca");
-                });
-
-            modelBuilder.Entity("Infomatrix_Modelos.Orden", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaOrden")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NombreCompleto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UsuarioAplicacionId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsuarioAplicacionId");
-
-                    b.ToTable("Orden");
-                });
-
-            modelBuilder.Entity("Infomatrix_Modelos.OrdenDetalle", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrdenId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrdenId");
-
-                    b.HasIndex("ProductoId");
-
-                    b.ToTable("OrdenDetalle");
+                    b.ToTable("Marca", (string)null);
                 });
 
             modelBuilder.Entity("Infomatrix_Modelos.Producto", b =>
@@ -153,7 +97,63 @@ namespace Infomatrix_Datos.Migrations
 
                     b.HasIndex("MarcaId");
 
-                    b.ToTable("Producto");
+                    b.ToTable("Producto", (string)null);
+                });
+
+            modelBuilder.Entity("Infomatrix_Modelos.Venta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaVenta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NombreCompleto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioAplicacionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioAplicacionId");
+
+                    b.ToTable("Venta", (string)null);
+                });
+
+            modelBuilder.Entity("Infomatrix_Modelos.VentaDetalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VentaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductoId");
+
+                    b.HasIndex("VentaId");
+
+                    b.ToTable("VentaDetalle", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -372,34 +372,6 @@ namespace Infomatrix_Datos.Migrations
                     b.HasDiscriminator().HasValue("UsuarioAplicacion");
                 });
 
-            modelBuilder.Entity("Infomatrix_Modelos.Orden", b =>
-                {
-                    b.HasOne("Infomatrix_Modelos.UsuarioAplicacion", "UsuarioAplicacion")
-                        .WithMany()
-                        .HasForeignKey("UsuarioAplicacionId");
-
-                    b.Navigation("UsuarioAplicacion");
-                });
-
-            modelBuilder.Entity("Infomatrix_Modelos.OrdenDetalle", b =>
-                {
-                    b.HasOne("Infomatrix_Modelos.Orden", "Orden")
-                        .WithMany()
-                        .HasForeignKey("OrdenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Infomatrix_Modelos.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Orden");
-
-                    b.Navigation("Producto");
-                });
-
             modelBuilder.Entity("Infomatrix_Modelos.Producto", b =>
                 {
                     b.HasOne("Infomatrix_Modelos.Categoria", "Categoria")
@@ -417,6 +389,34 @@ namespace Infomatrix_Datos.Migrations
                     b.Navigation("Categoria");
 
                     b.Navigation("Marca");
+                });
+
+            modelBuilder.Entity("Infomatrix_Modelos.Venta", b =>
+                {
+                    b.HasOne("Infomatrix_Modelos.UsuarioAplicacion", "UsuarioAplicacion")
+                        .WithMany()
+                        .HasForeignKey("UsuarioAplicacionId");
+
+                    b.Navigation("UsuarioAplicacion");
+                });
+
+            modelBuilder.Entity("Infomatrix_Modelos.VentaDetalle", b =>
+                {
+                    b.HasOne("Infomatrix_Modelos.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infomatrix_Modelos.Venta", "Venta")
+                        .WithMany()
+                        .HasForeignKey("VentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("Venta");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

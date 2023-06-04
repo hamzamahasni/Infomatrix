@@ -6,7 +6,7 @@
 
         <div class="container backgroundWhite pt-4">
             <div class="card" style="border:1px solid #000000; ">
-                <div class="card-header bg-dark text-light ml-0 row container" style="border-radius: 0px;">
+                <div class="card-header bg-dark text-light ml-0 row-personalizado container" style="border-radius: 0px;">
                     <div class="col-12 col-md-6">
                         <h1 class="text-white">@Model.Producto.NombreProducto</h1>
                     </div>
@@ -37,7 +37,7 @@
                                     </div>
                                     <div class="col-12">
 
-                                        <input asp-for="@Model.Producto.TempUnidades" class="form-control" />
+                                        <input type="number" asp-for="@Model.Producto.TempUnidades" class="form-control" min="1" max="100" />
                                         <span asp-validation-for="@Model.Producto.TempUnidades" class="text-danger"></span>
                                     </div>
 

@@ -4,7 +4,7 @@
     {
         public const string imagenRuta = @"\imagenes\producto\";
         public const string SessionCarroCompras = "SessionCarroCompras";
-        public const string SessionOrdenId = "SessionOrden";
+        public const string SessionVentaId = "SessionVenta";
 
         public const string AdminRole = "Admin";
         public const string ClienteRole = "Cliente";

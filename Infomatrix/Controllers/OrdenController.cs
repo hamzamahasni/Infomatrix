@@ -8,17 +8,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace Infomatrix.Controllers
 {
     [Authorize(Roles = WC.AdminRole)]
-    public class OrdenController : Controller
+    public class VentaController : Controller
     {
-        private readonly IOrdenRepositorio ordenRepo;
-        private readonly IOrdenDetalleRepositorio ordenDetalleRepo;
+        private readonly IVentaRepositorio ventaRepo;
+        private readonly IVentaDetalleRepositorio ventaDetalleRepo;
 
         [BindProperty]//que sea accesible en todo el controlador
-        public OrdenMV OrdenMV { get; set; }
-        public OrdenController(IOrdenRepositorio ordenRepo, IOrdenDetalleRepositorio ordenDetalleRepo)
+        public VentaVM VentaVM { get; set; }
+        public VentaController(IVentaRepositorio ventaRepo, IVentaDetalleRepositorio ventaDetalleRepo)
         {
-            this.ordenRepo = ordenRepo;
-            this.ordenDetalleRepo = ordenDetalleRepo;
+            this.ventaRepo = ventaRepo;
+            this.ventaDetalleRepo = ventaDetalleRepo;
         }
 
         public IActionResult Index()
@@ -28,12 +28,12 @@ namespace Infomatrix.Controllers
 
         public IActionResult Detalle(int id)
         {
-            OrdenMV = new OrdenMV()
+            VentaVM = new VentaVM()
             {
-                Orden = ordenRepo.ObtenerPrimero(o => o.Id == id),
-                OrdenDetalle = ordenDetalleRepo.ObtenerTodos(d => d.Id == id, incluirPropiedades:"Producto")
+                Venta = ventaRepo.ObtenerPrimero(o => o.Id == id),
+                VentaDetalle = ventaDetalleRepo.ObtenerTodos(d => d.VentaId == id, incluirPropiedades:"Producto")
             };
-            return View(OrdenMV);
+            return View(VentaVM);
         }
 
         [HttpPost]
@@ -41,8 +41,8 @@ namespace Infomatrix.Controllers
         public IActionResult Detalle()
         {
             List<CarroCompra> carroCompraLista = new List<CarroCompra>();
-            OrdenMV.OrdenDetalle = ordenDetalleRepo.ObtenerTodos(d => d.OrdenId == OrdenMV.Orden.Id);
-            foreach (var detalle in OrdenMV.OrdenDetalle)
+            VentaVM.VentaDetalle = ventaDetalleRepo.ObtenerTodos(d => d.VentaId == VentaVM.Venta.Id);
+            foreach (var detalle in VentaVM.VentaDetalle)
             {
                 CarroCompra carroCompra = new CarroCompra()
                 {
@@ -52,19 +52,19 @@ namespace Infomatrix.Controllers
             }
             HttpContext.Session.Clear();
             HttpContext.Session.Set(WC.SessionCarroCompras, carroCompraLista);
-            HttpContext.Session.Set(WC.SessionOrdenId,OrdenMV.Orden.Id);
+            HttpContext.Session.Set(WC.SessionVentaId,VentaVM.Venta.Id);
             return RedirectToAction("Index","Carro");
         }
 
         [HttpPost]
         public IActionResult Eliminar()
         {
-            Orden orden = ordenRepo.ObtenerPrimero(o => o.Id == OrdenMV.Orden.Id);
-            IEnumerable<OrdenDetalle> ordenDetalle = ordenDetalleRepo.ObtenerTodos(d=>d.OrdenId ==OrdenMV.Orden.Id);
+            Venta venta = ventaRepo.ObtenerPrimero(o => o.Id == VentaVM.Venta.Id);
+            IEnumerable<VentaDetalle> ventaDetalle = ventaDetalleRepo.ObtenerTodos(d=>d.VentaId ==VentaVM.Venta.Id);
 
-            ordenDetalleRepo.RemoverRango(ordenDetalle);
-            ordenRepo.Remover(orden);
-            ordenRepo.grabar();
+            ventaDetalleRepo.RemoverRango(ventaDetalle);
+            ventaRepo.Remover(venta);
+            ventaRepo.grabar();
             
             return RedirectToAction(nameof(Index));
         }
@@ -72,9 +72,9 @@ namespace Infomatrix.Controllers
         #region APIs
 
         [HttpGet]
-        public IActionResult ObtenerListaOrdenes() {
+        public IActionResult ObtenerListaVentas() {
 
-            return Json(new { data = ordenRepo.ObtenerTodos() });
+            return Json(new { data = ventaRepo.ObtenerTodos() });
 
         }
 

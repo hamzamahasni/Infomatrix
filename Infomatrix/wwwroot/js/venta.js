@@ -21,7 +21,7 @@ function loadDataTable() {
             }
         },
         "ajax": {
-            "url": "/Orden/ObtenerListaOrdenes"
+            "url": "/Venta/ObtenerListaVentas"
         },
         "columns": [
             { "data": "id", "width": "10%" },
@@ -33,7 +33,7 @@ function loadDataTable() {
                 "render": function (data) {
                     return `
                     <div class="text-center">
-                        <a href="/Orden/Detalle/${data}" class="btn btn-success text-white" style="cursor: pointer;">
+                        <a href="/Venta/Detalle/${data}" class="btn btn-success text-white" style="cursor: pointer;">
                            <i class="fas fa-edit"></i>
                         </a>
                     </div>

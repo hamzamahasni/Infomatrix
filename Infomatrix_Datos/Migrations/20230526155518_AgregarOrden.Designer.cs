@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infomatrix_Datos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230526155518_AgregarOrden")]
-    partial class AgregarOrden
+    [Migration("20230526155518_AgregarVenta")]
+    partial class AgregarVenta
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace Infomatrix_Datos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("MostrarOrden")
+                    b.Property<int>("MostrarVenta")
                         .HasColumnType("int");
 
                     b.Property<string>("NombreCategoria")
@@ -62,7 +62,7 @@ namespace Infomatrix_Datos.Migrations
                     b.ToTable("Marca");
                 });
 
-            modelBuilder.Entity("Infomatrix_Modelos.Orden", b =>
+            modelBuilder.Entity("Infomatrix_Modelos.Venta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace Infomatrix_Datos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FechaOrden")
+                    b.Property<DateTime>("FechaVenta")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NombreCompleto")
@@ -92,10 +92,10 @@ namespace Infomatrix_Datos.Migrations
 
                     b.HasIndex("UsuarioAplicacionId");
 
-                    b.ToTable("Orden");
+                    b.ToTable("Venta");
                 });
 
-            modelBuilder.Entity("Infomatrix_Modelos.OrdenDetalle", b =>
+            modelBuilder.Entity("Infomatrix_Modelos.VentaDetalle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +103,7 @@ namespace Infomatrix_Datos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrdenId")
+                    b.Property<int>("VentaId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductoId")
@@ -111,11 +111,11 @@ namespace Infomatrix_Datos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdenId");
+                    b.HasIndex("VentaId");
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("OrdenDetalle");
+                    b.ToTable("VentaDetalle");
                 });
 
             modelBuilder.Entity("Infomatrix_Modelos.Producto", b =>
@@ -375,7 +375,7 @@ namespace Infomatrix_Datos.Migrations
                     b.HasDiscriminator().HasValue("UsuarioAplicacion");
                 });
 
-            modelBuilder.Entity("Infomatrix_Modelos.Orden", b =>
+            modelBuilder.Entity("Infomatrix_Modelos.Venta", b =>
                 {
                     b.HasOne("Infomatrix_Modelos.UsuarioAplicacion", "UsuarioAplicacion")
                         .WithMany()
@@ -384,11 +384,11 @@ namespace Infomatrix_Datos.Migrations
                     b.Navigation("UsuarioAplicacion");
                 });
 
-            modelBuilder.Entity("Infomatrix_Modelos.OrdenDetalle", b =>
+            modelBuilder.Entity("Infomatrix_Modelos.VentaDetalle", b =>
                 {
-                    b.HasOne("Infomatrix_Modelos.Orden", "Orden")
+                    b.HasOne("Infomatrix_Modelos.Venta", "Venta")
                         .WithMany()
-                        .HasForeignKey("OrdenId")
+                        .HasForeignKey("VentaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -398,7 +398,7 @@ namespace Infomatrix_Datos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Orden");
+                    b.Navigation("Venta");
 
                     b.Navigation("Producto");
                 });

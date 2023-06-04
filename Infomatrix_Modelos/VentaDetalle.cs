@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Infomatrix_Modelos
 {
-    public class OrdenDetalle
+    public class VentaDetalle
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        public int OrdenId { get; set; }
-        [ForeignKey("OrdenId")]
-        public Orden Orden { get; set; }
+        public int VentaId { get; set; }
+        [ForeignKey("VentaId")]
+        public Venta Venta { get; set; }
         [Required]
         public int ProductoId { get; set; }
         [ForeignKey("ProductoId")]

@@ -3,17 +3,17 @@ using Infomatrix_Modelos;
 
 namespace Infomatrix_Datos.Datos.Repositorio
 {
-    public class OrdenDetalleRepositorio : Repositorio<OrdenDetalle>, IOrdenDetalleRepositorio
+    public class VentaDetalleRepositorio : Repositorio<VentaDetalle>, IVentaDetalleRepositorio
     {
         private readonly ApplicationDbContext db;
 
-        public OrdenDetalleRepositorio(ApplicationDbContext db): base(db) //Por el padre, aseguramos que estemos trabajando con mismo db
+        public VentaDetalleRepositorio(ApplicationDbContext db): base(db) //Por el padre, aseguramos que estemos trabajando con mismo db
         {
             this.db = db;
         }
-        public void Actualizar(OrdenDetalle ordenDetalle)
+        public void Actualizar(VentaDetalle ventaDetalle)
         {
-            db.Update(ordenDetalle);
+            db.Update(ventaDetalle);
         }
 
     }

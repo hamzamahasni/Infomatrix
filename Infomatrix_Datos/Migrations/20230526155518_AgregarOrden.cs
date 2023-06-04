@@ -6,53 +6,53 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infomatrix_Datos.Migrations
 {
     /// <inheritdoc />
-    public partial class AgregarOrden : Migration
+    public partial class AgregarVenta : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Orden",
+                name: "Venta",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UsuarioAplicacionId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FechaOrden = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NombreCompleto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orden", x => x.Id);
+                    table.PrimaryKey("PK_Venta", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orden_AspNetUsers_UsuarioAplicacionId",
+                        name: "FK_Venta_AspNetUsers_UsuarioAplicacionId",
                         column: x => x.UsuarioAplicacionId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrdenDetalle",
+                name: "VentaDetalle",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrdenId = table.Column<int>(type: "int", nullable: false),
+                    VentaId = table.Column<int>(type: "int", nullable: false),
                     ProductoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrdenDetalle", x => x.Id);
+                    table.PrimaryKey("PK_VentaDetalle", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrdenDetalle_Orden_OrdenId",
-                        column: x => x.OrdenId,
-                        principalTable: "Orden",
+                        name: "FK_VentaDetalle_Venta_VentaId",
+                        column: x => x.VentaId,
+                        principalTable: "Venta",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrdenDetalle_Producto_ProductoId",
+                        name: "FK_VentaDetalle_Producto_ProductoId",
                         column: x => x.ProductoId,
                         principalTable: "Producto",
                         principalColumn: "Id",
@@ -60,18 +60,18 @@ namespace Infomatrix_Datos.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orden_UsuarioAplicacionId",
-                table: "Orden",
+                name: "IX_Venta_UsuarioAplicacionId",
+                table: "Venta",
                 column: "UsuarioAplicacionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrdenDetalle_OrdenId",
-                table: "OrdenDetalle",
-                column: "OrdenId");
+                name: "IX_VentaDetalle_VentaId",
+                table: "VentaDetalle",
+                column: "VentaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrdenDetalle_ProductoId",
-                table: "OrdenDetalle",
+                name: "IX_VentaDetalle_ProductoId",
+                table: "VentaDetalle",
                 column: "ProductoId");
         }
 
@@ -79,10 +79,10 @@ namespace Infomatrix_Datos.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrdenDetalle");
+                name: "VentaDetalle");
 
             migrationBuilder.DropTable(
-                name: "Orden");
+                name: "Venta");
         }
     }
 }

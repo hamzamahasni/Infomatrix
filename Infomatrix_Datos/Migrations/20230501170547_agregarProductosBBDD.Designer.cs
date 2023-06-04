@@ -32,7 +32,7 @@ namespace Infomatrix_Datos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("MostrarOrden")
+                    b.Property<int>("MostrarVenta")
                         .HasColumnType("int");
 
                     b.Property<string>("NombreCategoria")

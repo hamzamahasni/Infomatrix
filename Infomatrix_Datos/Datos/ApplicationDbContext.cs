@@ -13,7 +13,7 @@ namespace Infomatrix_Datos.Datos
         public DbSet<Marca> Marca { get; set; }
         public DbSet<Producto> Producto { get; set; }
         public DbSet<UsuarioAplicacion> UsuarioAplicacion { get; set; }
-        public DbSet<Orden> Orden { get; set; }
-        public DbSet<OrdenDetalle> OrdenDetalle { get; set; }
+        public DbSet<Venta> Venta { get; set; }
+        public DbSet<VentaDetalle> VentaDetalle { get; set; }
     }
 }

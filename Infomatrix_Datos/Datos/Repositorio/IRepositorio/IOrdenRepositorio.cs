@@ -2,9 +2,9 @@
 
 namespace Infomatrix_Datos.Datos.Repositorio.IRepositorio
 {
-    public interface IOrdenRepositorio : IRepositorio<Orden>
+    public interface IVentaRepositorio : IRepositorio<Venta>
     {
-        void Actualizar (Orden orden);
+        void Actualizar (Venta venta);
 
     }
 }

@@ -10,8 +10,8 @@ namespace Infomatrix_Modelos
         [Required(ErrorMessage = "Nombre de Categoria es Obligatorio.")]
         public string NombreCategoria { get; set; }
 
-        [Required(ErrorMessage = "Orden es Obligatorio.")]
-        [Range(1, int.MaxValue, ErrorMessage = "El orden debe ser mayor a 0.")]
-        public int MostrarOrden { get; set; }
+        [Required(ErrorMessage = "Venta es Obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "El venta debe ser mayor a 0.")]
+        public int MostrarVenta { get; set; }
     }
 }

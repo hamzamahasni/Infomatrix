@@ -1,14 +1,14 @@
 ﻿@model Infomatrix_Modelos.ViewModels.ProductoUsuarioVM
-
+@using Infomatrix_Utilidades
 <form method="post">
     <br />
     <div class="backgroundWhiteBorder">
         <div class="container">
             <div class="card">
-                <div class="card-header bg-dark text-light ml-0 row container">
+                <div class="card-header bg-dark text-light ml-0 row-personalizado container">
                     <div class="col-6">
                         <i class="fa fa-shopping-cart"></i> &nbsp;
-                        Resumen de la Orden
+                        Resumen de la Venta
                     </div>
                     <div class="col-6 text-end">
                         <a asp-action="Index" class="btn btn-outline-info btn-sm">Regresar al Carro</a>
@@ -28,7 +28,7 @@
                                         <label>Nombres</label>
                                     </div>
                                     <div class="col-9">
-                                        <input asp-for="UsuarioAplicacion.NombreCompleto" type="text" class="form-control" />
+                                        <input asp-for="UsuarioAplicacion.NombreCompleto" type="text" class="form-control" id="nombre" required />
                                         <span asp-validation-for="UsuarioAplicacion.NombreCompleto" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -37,7 +37,7 @@
                                         <label>Telefono</label>
                                     </div>
                                     <div class="col-9">
-                                        <input asp-for="UsuarioAplicacion.PhoneNumber" type="text" class="form-control" />
+                                        <input asp-for="UsuarioAplicacion.PhoneNumber" type="tel" pattern="[0-9]{9}" class="form-control" id="numero" required />
                                         <span asp-validation-for="UsuarioAplicacion.PhoneNumber" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -46,8 +46,26 @@
                                         <label>Email</label>
                                     </div>
                                     <div class="col-9">
-                                        <input asp-for="UsuarioAplicacion.Email" type="text" class="form-control" />
+                                        <input asp-for="UsuarioAplicacion.Email" type="email" class="form-control" id="email" required />
                                         <span asp-validation-for="UsuarioAplicacion.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Direccion</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="UsuarioAplicacion.Direccion" type="text" class="form-control" id="direccion" required />
+                                        <span asp-validation-for="UsuarioAplicacion.Direccion" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Ciudad</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="UsuarioAplicacion.Ciudad" type="text" class="form-control" id="ciudad" required />
+                                        <span asp-validation-for="UsuarioAplicacion.Ciudad" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -66,6 +84,8 @@
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <input type="hidden" asp-for="@Model.ProductoLista[i].Id" />
                                                 <input type="hidden" asp-for="@Model.ProductoLista[i].NombreProducto" />
+                                                <input type="hidden" asp-for="@Model.ProductoLista[i].Precio" />
+                                                <input type="hidden" asp-for="@Model.ProductoLista[i].TempUnidades" />
                                                 <div>
                                                     <h6 class="my-0">@Model.ProductoLista[i].NombreProducto</h6>
                                                     <small class="text-muted">Unidades:  @Model.ProductoLista[i].TempUnidades </small>
@@ -89,7 +109,17 @@
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-12 col-md-5 offset-md-7">
-                            <button type="submit" class="btn btn-primary form-control">Enviar Orden</button>
+                            @if(User.IsInRole(WC.AdminRole))
+                            {
+                                <button type="submit" onclick="return validarDatos()" class="btn btn-success form-control">Crear Venta</button>
+                            } else
+                            {
+
+                                <button type="submit" class="btn btn-primary form-control" onclick="return validarDatos()">Pagar</button>
+                                
+                            }
+
+                           
                         </div>
                     </div>
                 </div>
@@ -101,4 +131,20 @@
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function validarDatos(){
+            if(document.getElementById("nombre").value==""
+            || document.getElementById("numero").value == ""
+            || document.getElementById("email").value == ""
+            || document.getElementById("direccion").value == ""
+            || document.getElementById("ciudad").value == ""){
+                swal("Error","Los datos del usuario son obligatorios", "error");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+  
+
 }

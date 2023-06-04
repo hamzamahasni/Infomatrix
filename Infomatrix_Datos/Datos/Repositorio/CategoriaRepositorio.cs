@@ -18,7 +18,7 @@ namespace Infomatrix_Datos.Datos.Repositorio
             if (catAnterior != null)
             {
                 catAnterior.NombreCategoria = categoria.NombreCategoria;
-                catAnterior.MostrarOrden = categoria.MostrarOrden;
+                catAnterior.MostrarVenta = categoria.MostrarVenta;
             }
         }
     }
