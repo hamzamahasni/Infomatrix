@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\imagenes\producto\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Infomatrix_Datos\Infomatrix_Datos.csproj" />
     <ProjectReference Include="..\Infomatrix_Modelos\Infomatrix_Modelos.csproj" />
     <ProjectReference Include="..\Infomatrix_Utilidades2\Infomatrix_Utilidades.csproj" />

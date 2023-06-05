@@ -206,9 +206,14 @@ namespace Infomatrix.Controllers
                 {
                     // Tiene que pagar o es admin
                     if (Paypal()) {
-
-                        await CorreoYGrabarAsync();
                         payerId = null;
+                        try { 
+                            await CorreoYGrabarAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            return RedirectToAction(nameof(Confirmacion));
+                        }
                         return RedirectToAction(nameof(Confirmacion));
                     } else
                     {
@@ -328,14 +333,27 @@ namespace Infomatrix.Controllers
             };
             string texto = totalapagar.ToString() + ".00";
             //Adding Item Details like name, currency, price etc  
-            itemList.items.Add(new Item()
+            foreach (var prod in productoUsuarioVM.ProductoLista)
             {
-                name = "Item Detail",
-                currency = "EUR",
-                price = texto,
-                quantity = "1",
-                sku = "asd"
-            });
+                itemList.items.Add(new Item()
+                {
+                    name = prod.NombreProducto.ToString(),
+                    currency = "EUR",
+                    price = prod.Precio.ToString() + ".00",
+                    quantity = prod.TempUnidades.ToString(),
+                    sku = prod.NombreProducto.ToString()
+                });
+            }
+
+
+            //itemList.items.Add(new Item()
+            //{
+            //    name = "Item Detail",
+            //    currency = "EUR",
+            //    price = texto,
+            //    quantity = "1",
+            //    sku = "asd"
+            //});
             var payer = new Payer()
             {
                 payment_method = "paypal"
